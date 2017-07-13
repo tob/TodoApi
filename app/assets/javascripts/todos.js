@@ -88,8 +88,24 @@ function submitTodo(event) {
 
 function cleanUpDoneTodos(event) {
   event.preventDefault();
-  $.when($(".success").remove())
-    .then(updateCounters);
+
+  $.each($(".success"), function(index, tableRow) {
+    todoId = $(tableRow).data('id');
+    deleteTodo(todoId);
+  });
+}
+
+function deleteTodo(todoId) {
+  $.ajax({
+    type: "DELETE",
+    url: "/todos/" + todoId + ".json",
+    contentType: "application/json",
+    dataType: "json"
+  })
+  .done(function(data) {
+    $('tr[data-id="'+todoId+'"]').remove();
+    updateCounters();
+  });
 }
 
 $(document).ready(function() {
